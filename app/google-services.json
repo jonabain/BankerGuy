@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "61396121986",
+    "firebase_url": "https://bankerguy-78293.firebaseio.com",
+    "project_id": "bankerguy-78293",
+    "storage_bucket": "bankerguy-78293.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:61396121986:android:2c87447c70bcd58b",
+        "android_client_info": {
+          "package_name": "com.bankerguy.bankerguy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "61396121986-vs1br3god42uug1qnfclha0u48oi69op.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bankerguy.bankerguy",
+            "certificate_hash": "71497c5af917f60889f42344b1376cc3df01c1a0"
+          }
+        },
+        {
+          "client_id": "61396121986-nbb6i3934nr6qd9tauau16i846rtfco3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8KiGMoNxrFc9noUYqbAm9WjdR5-ED4f4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "61396121986-nbb6i3934nr6qd9tauau16i846rtfco3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

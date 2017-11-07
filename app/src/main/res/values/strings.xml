@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BankerGuy</string>
+    <string name="username_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="create_account_button">Create Account</string>
 </resources>
