@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     tools:context="com.bankerguy.bankerguy.HomeActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp" />
+
 </android.support.constraint.ConstraintLayout>

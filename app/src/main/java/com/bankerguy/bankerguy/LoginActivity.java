@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,6 +65,16 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
     }
 
     private void login(final String email, final String password){
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            Toast.makeText(LoginActivity.this, "Please use a valid email address.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(password.isEmpty()){
+            Toast.makeText(LoginActivity.this, "Please enter a password.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -79,6 +90,16 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
     }
 
     private void create(final String email, final String password){
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            Toast.makeText(LoginActivity.this, "Please use a valid email address.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(password.isEmpty()){
+            Toast.makeText(LoginActivity.this, "Please enter a password.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -97,6 +118,7 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
     private void goToHome(){
         Intent home = new Intent(this, HomeActivity.class);
         this.startActivity(home);
+        finish();
     }
 
 }
