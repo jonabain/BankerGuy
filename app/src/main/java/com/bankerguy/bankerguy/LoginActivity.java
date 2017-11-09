@@ -116,9 +116,10 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
     }
 
     private void goToHome(){
+        userEmail.setText("");
+        userPassword.setText("");
         Intent home = new Intent(this, HomeActivity.class);
         this.startActivity(home);
-        finish();
     }
 
 }
