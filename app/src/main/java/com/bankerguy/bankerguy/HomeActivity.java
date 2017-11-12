@@ -10,7 +10,6 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -51,7 +50,7 @@ public class HomeActivity extends Activity implements AppCompatCallback {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.home_menu, menu);
         return true;
     }
 
@@ -62,9 +61,16 @@ public class HomeActivity extends Activity implements AppCompatCallback {
         if(id == R.id.action_logout){
             logout();
             return true;
+        } else if (id == R.id.action_add){
+            goToAdd();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goToAdd(){
+        this.startActivity(new Intent(this, AddCourseActivity.class));
     }
 
     public void logout(){

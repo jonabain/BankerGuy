@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".HomeActivity"
             android:parentActivityName=".LoginActivity"/>
-        <activity android:name=".AddCourseActivity" />
+        <activity android:name=".AddCourseActivity"
+            android:parentActivityName=".HomeActivity"/>
         <activity android:name=".CourseActivity" />
         <activity android:name=".BankInfoActivity" />
         <activity android:name=".BankActivity" />
