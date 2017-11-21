@@ -13,7 +13,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 public class AddCourseActivity extends Activity {
 
@@ -28,18 +31,25 @@ public class AddCourseActivity extends Activity {
 
         nameSpinner = (Spinner) findViewById(R.id.spinnerName);
 
-        courseListRef = FirebaseDatabase.getInstance().getReference("Courses");
+        courseListRef = FirebaseDatabase.getInstance().getReference("courses");
+
         courseListRef.addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot){
-                final List<String> courses = new ArrayList<String>();
+                Iterable<DataSnapshot> coursesData = dataSnapshot.getChildren();
+                Map<Integer, Course> courses = new Hashtable<>();
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    String name = snapshot.getValue(String.class);
-                    courses.add(name);
+                for(DataSnapshot snapshot : coursesData){
+                    courses.put(Integer.parseInt(snapshot.getKey()), snapshot.getValue(Course.class));
                 }
 
-                ArrayAdapter<String> namesAdapter = new ArrayAdapter<String>(AddCourseActivity.this, android.R.layout.simple_spinner_item, courses);
+                List<String> courseNames = new ArrayList<>();
+
+                for(Hashtable.Entry<Integer, Course> entry : courses.entrySet()){
+                    courseNames.add(entry.getValue().getName());
+                }
+
+                ArrayAdapter<String> namesAdapter = new ArrayAdapter<String>(AddCourseActivity.this, android.R.layout.simple_spinner_item, courseNames);
                 namesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 nameSpinner.setAdapter(namesAdapter);
             }

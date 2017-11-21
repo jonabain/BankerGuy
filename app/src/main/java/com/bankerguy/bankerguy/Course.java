@@ -12,9 +12,56 @@ public class Course {
         FLASHCARDS
     }
 
-    private int courseId;
-    private String courseName;
-    private CourseType courseType;
-    private List<Card> cards; //private List<Integer> cards;
+    private int id;
+    private String name;
+    private CourseType type;
+    private List<Integer> cards;
 
+    public Course(){
+
+    }
+
+    Course(int id, List<Integer> cards, String name, String type){
+        this.id = id;
+        this.cards = cards;
+        this.name = name;
+        for(CourseType courseType : CourseType.values()){
+            if(type.equalsIgnoreCase(courseType.toString())){
+                this.type = courseType;
+                break;
+            }
+        }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public CourseType getType() {
+        return type;
+    }
+
+    public void setType(CourseType type) {
+        this.type = type;
+    }
+
+    public List<Integer> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Integer> cards) {
+        this.cards = cards;
+    }
 }
