@@ -64,4 +64,8 @@ public class Course {
     public void setCards(List<Integer> cards) {
         this.cards = cards;
     }
+
+    public String toString(){
+        return name;
+    }
 }

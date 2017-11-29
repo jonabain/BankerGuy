@@ -10,12 +10,39 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class HomeActivity extends Activity implements AppCompatCallback {
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class HomeActivity extends Activity implements AppCompatCallback, View.OnClickListener {
 
     private AppCompatDelegate delegate;
+
+    private FirebaseDatabase database;
+    private FirebaseUser user;
+
+    private TableLayout table;
+    private Map<Integer, Course> coursesList;
+
+    private Button courseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +57,47 @@ public class HomeActivity extends Activity implements AppCompatCallback {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         delegate.setSupportActionBar(toolbar);
+
+        table = findViewById(R.id.tableEnrolledCourses);
+        courseButton = findViewById(R.id.buttonToCourse);
+
+        courseButton.setOnClickListener(this);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null){
+            Toast.makeText(HomeActivity.this, "Please Log In.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        database = FirebaseDatabase.getInstance();
+
+        DatabaseReference coursesRef = database.getReference("courses");
+        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> coursesData = dataSnapshot.getChildren();
+                Map<Integer, Course> courses = new HashMap<>();
+
+                for(DataSnapshot snapshot : coursesData){
+                    Course course = snapshot.getValue(Course.class);
+                    courses.put(course.getId(), course);
+                }
+
+                setCoursesList(courses);
+                loadProgress();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HomeActivity.this, "Error reading courses list from database: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View view){
+        if(view == courseButton){
+            this.startActivity(new Intent(this, CourseActivity.class));
+        }
     }
 
     @Override
@@ -77,6 +145,54 @@ public class HomeActivity extends Activity implements AppCompatCallback {
         FirebaseAuth.getInstance().signOut();
         this.startActivity(new Intent(this, LoginActivity.class));
         finish();
+    }
+
+    public void setCoursesList(Map<Integer, Course> courses){
+        coursesList = courses;
+    }
+
+    public void loadProgress(){
+        DatabaseReference progressRef = database.getReference("progress/" + user.getUid());
+        progressRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<CourseProgress> courses = new ArrayList<>();
+                Iterable<DataSnapshot> progress = dataSnapshot.getChildren();
+
+                for(DataSnapshot snapshot : progress){
+                    courses.add(snapshot.getValue(CourseProgress.class));
+                }
+
+                generateTable(courses);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HomeActivity.this, "Error reading list of enrolled courses from database: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void generateTable(List<CourseProgress> courses){
+        table.removeAllViewsInLayout();
+
+        for(CourseProgress course : courses){
+            TableRow row = new TableRow(HomeActivity.this);
+            TextView col1 = new TextView(HomeActivity.this);
+            TextView col2 = new TextView(HomeActivity.this);
+
+            col1.setText(coursesList.get(course.getCourseId()).getName());
+
+            Calendar cal = Calendar.getInstance();
+            Date date = new Date(course.getDueDate());
+            cal.setTime(date);
+            String dateString = (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DATE) + "-" + cal.get(Calendar.YEAR);
+            col2.setText(dateString);
+
+            row.addView(col1);
+            row.addView(col2);
+            table.addView(row);
+        }
     }
 
 }
