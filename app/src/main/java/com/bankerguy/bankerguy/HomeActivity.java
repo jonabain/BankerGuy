@@ -10,6 +10,8 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -30,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HomeActivity extends Activity implements AppCompatCallback {
+public class HomeActivity extends Activity implements AppCompatCallback, View.OnClickListener {
 
     private AppCompatDelegate delegate;
 
@@ -39,6 +41,8 @@ public class HomeActivity extends Activity implements AppCompatCallback {
 
     private TableLayout table;
     private Map<Integer, Course> coursesList;
+
+    private Button courseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class HomeActivity extends Activity implements AppCompatCallback {
         delegate.setSupportActionBar(toolbar);
 
         table = findViewById(R.id.tableEnrolledCourses);
+        courseButton = findViewById(R.id.buttonToCourse);
+
+        courseButton.setOnClickListener(this);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null){
@@ -84,6 +91,13 @@ public class HomeActivity extends Activity implements AppCompatCallback {
                 Toast.makeText(HomeActivity.this, "Error reading courses list from database: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onClick(View view){
+        if(view == courseButton){
+            this.startActivity(new Intent(this, CourseActivity.class));
+        }
     }
 
     @Override

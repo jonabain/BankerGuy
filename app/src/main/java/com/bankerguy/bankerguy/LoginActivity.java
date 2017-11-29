@@ -51,8 +51,7 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null) {
-            //goToHome();
-            goToCourse();
+            goToHome();
         }
     }
 
@@ -81,8 +80,8 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //goToHome();
-                            goToCourse();
+                            goToHome();
+                            //goToCourse();
                         } else {
                             Toast.makeText(LoginActivity.this, "Login unsuccessful.",
                                     Toast.LENGTH_SHORT).show();
