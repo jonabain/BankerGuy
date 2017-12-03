@@ -81,7 +81,6 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             goToHome();
-                            //goToCourse();
                         } else {
                             Toast.makeText(LoginActivity.this, "Login unsuccessful.",
                                     Toast.LENGTH_SHORT).show();
@@ -121,13 +120,6 @@ public class LoginActivity extends Activity implements Button.OnClickListener {
         userPassword.setText("");
         Intent home = new Intent(this, HomeActivity.class);
         this.startActivity(home);
-    }
-
-    private void goToCourse(){
-        userEmail.setText("");
-        userPassword.setText("");
-        Intent course = new Intent(this, CourseActivity.class);
-        this.startActivity(course);
     }
 
 }

@@ -98,9 +98,10 @@ public class AddCourseActivity extends Activity implements View.OnClickListener,
                 return;
             }
 
-            CourseProgress progress = new CourseProgress(chosenCourse, date.getTimeInMillis());
-
             DatabaseReference userRef = database.getReference("progress/"+user.getUid()).push();
+
+            CourseProgress progress = new CourseProgress(chosenCourse, date.getTimeInMillis(), userRef.getKey());
+
             userRef.setValue(progress);
 
             finish();

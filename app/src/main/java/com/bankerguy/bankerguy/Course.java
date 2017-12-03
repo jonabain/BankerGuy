@@ -15,13 +15,13 @@ public class Course {
     private int id;
     private String name;
     private CourseType type;
-    private List<Integer> cards;
+    private List<String> cards;
 
     public Course(){
 
     }
 
-    Course(int id, List<Integer> cards, String name, String type){
+    Course(int id, List<String> cards, String name, String type){
         this.id = id;
         this.cards = cards;
         this.name = name;
@@ -57,11 +57,11 @@ public class Course {
         this.type = type;
     }
 
-    public List<Integer> getCards() {
+    public List<String> getCards() {
         return cards;
     }
 
-    public void setCards(List<Integer> cards) {
+    public void setCards(List<String> cards) {
         this.cards = cards;
     }
 

@@ -26,18 +26,28 @@ import java.util.List;
 
 public class CourseProgress {
 
+    private String id;
     private int courseId;
     private long dueDate; // Stored in Milliseconds
-    private List<Integer> completedCards;
+    private List<String> completedCards;
 
     public CourseProgress(){
 
     }
 
-    public CourseProgress(int courseId, long dueDateMillis){
+    public CourseProgress(int courseId, long dueDateMillis, String id){
+        this.id = id;
         this.courseId = courseId;
         this.dueDate = dueDateMillis;
         completedCards = new ArrayList<>();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getCourseId() {
@@ -63,11 +73,11 @@ public class CourseProgress {
         this.dueDate = dueDate;
     }
 
-    public List<Integer> getCompletedCards() {
+    public List<String> getCompletedCards() {
         return completedCards;
     }
 
-    public void setCompletedCards(List<Integer> completedCards) {
+    public void setCompletedCards(List<String> completedCards) {
         this.completedCards = completedCards;
     }
 }

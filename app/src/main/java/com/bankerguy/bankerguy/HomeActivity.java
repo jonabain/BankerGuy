@@ -49,11 +49,8 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
     private FirebaseDatabase database;
     private FirebaseUser user;
 
-    //private TableLayout table;
     private ListView enrolledList;
     private Map<Integer, Course> coursesList;
-
-    //private Button courseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +66,8 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         delegate.setSupportActionBar(toolbar);
 
-        //table = findViewById(R.id.tableEnrolledCourses);
         enrolledList = findViewById(R.id.listEnrolled);
-        //courseButton = findViewById(R.id.buttonToCourse);
         enrolledList.setOnItemClickListener(this);
-        //courseButton.setOnClickListener(this);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null){
@@ -108,7 +102,15 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
     @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long arg){
         CourseProgress selected = (CourseProgress)(adapter.getAdapter().getItem(position));
-        startActivity(new Intent(this, CourseActivity.class));
+        if(selected.getCompletedCards() == null){
+            selected.setCompletedCards(new ArrayList<String>());
+        }
+
+        Intent toCourse = new Intent(this, CourseActivity.class);
+        toCourse.putExtra("courseId", selected.getCourseId());
+        toCourse.putStringArrayListExtra("completed", new ArrayList<>(selected.getCompletedCards()));
+        toCourse.putExtra("progressId", selected.getId());
+        startActivity(toCourse);
     }
 
     @Override
@@ -154,7 +156,6 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
 
     public void logout(){
         FirebaseAuth.getInstance().signOut();
-        this.startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 
@@ -164,7 +165,7 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
 
     public void loadProgress(){
         DatabaseReference progressRef = database.getReference("progress/" + user.getUid());
-        progressRef.addValueEventListener(new ValueEventListener() {
+        progressRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<CourseProgress> courses = new ArrayList<>();
@@ -237,27 +238,5 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
             return listLayout;
         }
     }
-
-    /*public void generateTable(List<CourseProgress> courses){
-        table.removeAllViewsInLayout();
-
-        for(CourseProgress course : courses){
-            TableRow row = new TableRow(HomeActivity.this);
-            TextView col1 = new TextView(HomeActivity.this);
-            TextView col2 = new TextView(HomeActivity.this);
-
-            col1.setText(coursesList.get(course.getCourseId()).getName());
-
-            Calendar cal = Calendar.getInstance();
-            Date date = new Date(course.getDueDate());
-            cal.setTime(date);
-            String dateString = (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DATE) + "-" + cal.get(Calendar.YEAR);
-            col2.setText(dateString);
-
-            row.addView(col1);
-            row.addView(col2);
-            table.addView(row);
-        }
-    }*/
 
 }
