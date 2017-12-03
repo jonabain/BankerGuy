@@ -1,5 +1,19 @@
 package com.bankerguy.bankerguy;
 
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +50,13 @@ public class CourseProgress {
 
     public long getDueDate() {
         return dueDate;
+    }
+
+    public String getDueDateString() {
+        Calendar cal = Calendar.getInstance();
+        Date date = new Date(getDueDate());
+        cal.setTime(date);
+        return (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DATE) + "-" + cal.get(Calendar.YEAR);
     }
 
     public void setDueDate(long dueDate) {

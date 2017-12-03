@@ -1,6 +1,8 @@
 package com.bankerguy.bankerguy;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,10 +10,18 @@ import android.support.v7.app.AppCompatCallback;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,17 +42,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HomeActivity extends Activity implements AppCompatCallback, View.OnClickListener {
+public class HomeActivity extends Activity implements AppCompatCallback, AdapterView.OnItemClickListener {
 
     private AppCompatDelegate delegate;
 
     private FirebaseDatabase database;
     private FirebaseUser user;
 
-    private TableLayout table;
+    //private TableLayout table;
+    private ListView enrolledList;
     private Map<Integer, Course> coursesList;
 
-    private Button courseButton;
+    //private Button courseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +69,11 @@ public class HomeActivity extends Activity implements AppCompatCallback, View.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         delegate.setSupportActionBar(toolbar);
 
-        table = findViewById(R.id.tableEnrolledCourses);
-        courseButton = findViewById(R.id.buttonToCourse);
-
-        courseButton.setOnClickListener(this);
+        //table = findViewById(R.id.tableEnrolledCourses);
+        enrolledList = findViewById(R.id.listEnrolled);
+        //courseButton = findViewById(R.id.buttonToCourse);
+        enrolledList.setOnItemClickListener(this);
+        //courseButton.setOnClickListener(this);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null){
@@ -94,10 +106,9 @@ public class HomeActivity extends Activity implements AppCompatCallback, View.On
     }
 
     @Override
-    public void onClick(View view){
-        if(view == courseButton){
-            this.startActivity(new Intent(this, CourseActivity.class));
-        }
+    public void onItemClick(AdapterView<?> adapter, View view, int position, long arg){
+        CourseProgress selected = (CourseProgress)(adapter.getAdapter().getItem(position));
+        startActivity(new Intent(this, CourseActivity.class));
     }
 
     @Override
@@ -163,7 +174,7 @@ public class HomeActivity extends Activity implements AppCompatCallback, View.On
                     courses.add(snapshot.getValue(CourseProgress.class));
                 }
 
-                generateTable(courses);
+                generateList(courses);
             }
 
             @Override
@@ -173,7 +184,61 @@ public class HomeActivity extends Activity implements AppCompatCallback, View.On
         });
     }
 
-    public void generateTable(List<CourseProgress> courses){
+    public void generateList(List<CourseProgress> courses){
+        enrolledList.setAdapter(new CourseProgressListAdapter(this, courses.toArray(new CourseProgress[courses.size()])));
+    }
+
+    public class CourseProgressListAdapter extends ArrayAdapter<CourseProgress> {
+        Context context;
+
+        public CourseProgressListAdapter(Context context, CourseProgress[] courses){
+            super(context, -1, -1, courses);
+            this.context = context;
+        }
+
+        public CourseProgressListAdapter(Context context, int resource, int textViewResourceId, CourseProgress[] courses){
+            super(context, resource, textViewResourceId, courses);
+            this.context = context;
+        }
+
+        @SuppressLint("ResourceType")
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent){
+            DisplayMetrics dm = context.getResources().getDisplayMetrics();
+
+            LinearLayout listLayout = new LinearLayout(context);
+            AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, (int)((50 * dm.density) + 0.5));
+            listLayout.setLayoutParams(layoutParams);
+            listLayout.setId(/*R.id.listLayoutProgress*/1337);
+
+            LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
+            leftParams.weight = 1;
+            leftParams.gravity = Gravity.LEFT;
+            leftParams.setMargins(8, 16, 0, 16);
+
+            LinearLayout.LayoutParams rightParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
+            rightParams.weight = 1;
+            leftParams.gravity = Gravity.RIGHT;
+            leftParams.setMargins(0, 16, 8, 16);
+
+            TextView textName = new TextView(context);
+            textName.setId(/*R.id.textProgressName*/1338);
+            textName.setLayoutParams(leftParams);
+            listLayout.addView(textName);
+
+            TextView textDate = new TextView(context);
+            textDate.setId(/*R.id.textProgressDate*/1339);
+            textName.setLayoutParams(rightParams);
+            listLayout.addView(textDate);
+
+            textName.setText(coursesList.get(super.getItem(position).getCourseId()).getName());
+            textDate.setText(super.getItem(position).getDueDateString());
+
+            return listLayout;
+        }
+    }
+
+    /*public void generateTable(List<CourseProgress> courses){
         table.removeAllViewsInLayout();
 
         for(CourseProgress course : courses){
@@ -193,6 +258,6 @@ public class HomeActivity extends Activity implements AppCompatCallback, View.On
             row.addView(col2);
             table.addView(row);
         }
-    }
+    }*/
 
 }
