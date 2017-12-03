@@ -99,11 +99,11 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
         });
     }
 
-    @Override
+    /*@Override
     public void onResume(){
         super.onResume();
         loadProgress();
-    }
+    }*/
 
     @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long arg){
@@ -161,8 +161,8 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
     }
 
     public void logout(){
-        FirebaseAuth.getInstance().signOut();
         finish();
+        FirebaseAuth.getInstance().signOut();
     }
 
     public void setCoursesList(Map<Integer, Course> courses){
@@ -171,7 +171,7 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
 
     public void loadProgress(){
         DatabaseReference progressRef = database.getReference("progress/" + user.getUid());
-        progressRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        progressRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<CourseProgress> courses = new ArrayList<>();
@@ -186,7 +186,9 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HomeActivity.this, "Error reading list of enrolled courses from database: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                    Toast.makeText(HomeActivity.this, "Error reading list of enrolled courses from database: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
