@@ -34,6 +34,7 @@ public class CourseActivity extends Activity implements Button.OnClickListener{
     private Button incorrectButton;
     private Button backButton;
     private TextView flashcard;
+    private TextView textTitle;
     private ProgressBar progressBar;
 
     private Course course;
@@ -57,6 +58,7 @@ public class CourseActivity extends Activity implements Button.OnClickListener{
         incorrectButton = findViewById(R.id.buttonIncorrect);
         backButton = findViewById(R.id.buttonBack);
         flashcard = findViewById(R.id.textViewFlashcard);
+        textTitle = findViewById(R.id.textTitle);
         progressBar = findViewById(R.id.progressBar);
 
         flipButton.setOnClickListener(this);
@@ -98,6 +100,7 @@ public class CourseActivity extends Activity implements Button.OnClickListener{
                     Course c = snapshot.getValue(Course.class);
                     if(c.getId() == id){
                         course = c;
+                        textTitle.setText(course.getName());
                         getAllCards();
                         return;
                     }
@@ -121,6 +124,8 @@ public class CourseActivity extends Activity implements Button.OnClickListener{
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     cards.add(snapshot.getValue(Card.class));
                 }
+
+                progressBar.setProgress((int) (100 * (float) progress.getCompletedCards().size() / (float) course.getCards().size()));
                 newCard();
             }
 

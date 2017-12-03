@@ -100,6 +100,12 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        loadProgress();
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> adapter, View view, int position, long arg){
         CourseProgress selected = (CourseProgress)(adapter.getAdapter().getItem(position));
         if(selected.getCompletedCards() == null){
