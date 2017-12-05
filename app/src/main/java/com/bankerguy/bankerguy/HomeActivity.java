@@ -48,6 +48,8 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
 
     private FirebaseDatabase database;
     private FirebaseUser user;
+    private DatabaseReference progressRef;
+    private ValueEventListener progressListener;
 
     private ListView enrolledList;
     private Map<Integer, Course> coursesList;
@@ -160,9 +162,20 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
         this.startActivity(new Intent(this, AddCourseActivity.class));
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        progressRef.removeEventListener(progressListener);
+    }
+
     public void logout(){
         finish();
         FirebaseAuth.getInstance().signOut();
+    }
+
+    @Override
+    public void onBackPressed(){
+        logout();
     }
 
     public void setCoursesList(Map<Integer, Course> courses){
@@ -170,8 +183,8 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
     }
 
     public void loadProgress(){
-        DatabaseReference progressRef = database.getReference("progress/" + user.getUid());
-        progressRef.addValueEventListener(new ValueEventListener() {
+        progressRef = database.getReference("progress/" + user.getUid());
+        progressListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<CourseProgress> courses = new ArrayList<>();
@@ -190,7 +203,8 @@ public class HomeActivity extends Activity implements AppCompatCallback, Adapter
                     Toast.makeText(HomeActivity.this, "Error reading list of enrolled courses from database: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        };
+        progressRef.addValueEventListener(progressListener);
     }
 
     public void generateList(List<CourseProgress> courses){

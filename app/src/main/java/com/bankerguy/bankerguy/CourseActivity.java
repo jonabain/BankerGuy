@@ -202,6 +202,22 @@ public class CourseActivity extends Activity implements Button.OnClickListener{
         builder.show();
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        database.getReference("progress/" + user.getUid() + "/" + progress.getId()).setValue(progress);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(completed){
+            database.getReference("progress/" + user.getUid() + "/" + progress.getId()).removeValue();
+        } else {
+            database.getReference("progress/" + user.getUid() + "/" + progress.getId()).setValue(progress);
+        }
+    }
+
     void closeCourse(){
         if(completed){
             database.getReference("progress/" + user.getUid() + "/" + progress.getId()).removeValue();
