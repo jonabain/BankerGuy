@@ -163,7 +163,7 @@ public class CourseActivity extends Activity implements Button.OnClickListener{
         int cardIndex = rand.nextInt(course.getCards().size());
         String cardId = course.getCards().get(cardIndex);
 
-        while(!completed && progress.getCompletedCards().contains(cardId)){
+        while((!completed && progress.getCompletedCards().contains(cardId)) || (!(currentCard == null) && progress.getCompletedCards().size() < course.getCards().size() - 1 && cardId.equals(currentCard.getId()))){
             cardIndex = rand.nextInt(course.getCards().size());
             cardId = course.getCards().get(cardIndex);
         }
@@ -185,8 +185,8 @@ public class CourseActivity extends Activity implements Button.OnClickListener{
     void courseCompleted(){
         completed = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Congrats!");
-        builder.setMessage("You've completed all the questions in this course. You can stay and continue practicing with this set of questions or leave and start a new course.");
+        builder.setTitle("You're a BankerGuy!");
+        builder.setMessage("Congrats, you've completed all the questions in this course! You can stay and continue practicing with this set of questions or leave and start a new course.");
         builder.setPositiveButton("Stay", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
